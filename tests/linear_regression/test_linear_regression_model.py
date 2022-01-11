@@ -1,6 +1,6 @@
 from pytest import mark
-from src.linear_regression_model import LinearRegressionModel
 
+from src.linear_regression_model import LinearRegressionModel
 
 
 @mark.smoke
@@ -9,8 +9,8 @@ class LinearRegressionTests:
     model = LinearRegressionModel()
 
     @mark.fit
-    def test_fit(self):
-        data = test_get_data
+    def test_fit(self, get_dataframe):
+        data = get_dataframe
         assert False
 
     @mark.evaluate
