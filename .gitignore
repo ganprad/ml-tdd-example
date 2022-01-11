@@ -1,0 +1,14 @@
+data/*
+.keepsake/*/**
+.keepsake/*
+src/.keepsake/*/**
+src/.keepsake/*
+src/lightning_logs/*
+*.pyc
+round_*/*
+.idea/*/**
+.idea/*
+tests/.hypothesis/*
+tests/sportscar/*
+tests/test_widget.py
+requirements/*.txt
