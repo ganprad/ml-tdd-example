@@ -9,6 +9,6 @@ round_*/*
 .idea/*/**
 .idea/*
 tests/.hypothesis/*
-tests/sportscar/*
-tests/test_widget.py
+udemy_automation_lab/sportscar/*
+udemy_automation_lab/test_widget.py
 requirements/*.txt
