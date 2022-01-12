@@ -2,12 +2,11 @@
 
 from setuptools import setup, find_packages
 
-
 setup(
-    name="skeleton",
+    name="python-automation",
     version="0.0.1",
     license="MIT",
-    description="A project skeleton",
+    description="A python automation project skeleton",
     author="Pradeep Ganesan",
     packages=find_packages(where='src')
 )
