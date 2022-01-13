@@ -12,3 +12,8 @@ tests/.hypothesis/*
 udemy_automation_lab/sportscar/*
 udemy_automation_lab/test_widget.py
 requirements/*.txt
+tests/.hypothesis/*
+tests/*/.hypothesis/*
+.hypothesis/*/
+tests/.pytest_cache/*
+*.egg*
