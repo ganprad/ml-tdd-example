@@ -10,7 +10,7 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope="session")
 def get_data_path(request):
-    return request.config.getoption("--fn")
+    return request.config.getoption("--fn")  # Add other types of data for deployment, retraining, known edge cases etc.
 
 
 @pytest.fixture(scope="function")

@@ -7,6 +7,7 @@ class Config:
         FILENAMES = ["data", "retrain", "deployment"]
         assert file in FILENAMES
         PKG_PATH = Path(__file__).parents[1].resolve()
-        DATA_PATH = str(PKG_PATH / f"data/{file}.csv")
-        assert os.path.exists()
-        self.DATA_PATH = DATA_PATH
+        fn_constants_map_dict = {
+            f"{file}": f"../../data/{file}.csv"}
+        assert os.path.exists(fn_constants_map_dict[file])
+        self.DATA_PATH = fn_constants_map_dict[file]
