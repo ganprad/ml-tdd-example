@@ -1,5 +1,7 @@
 from pytest import mark
 
+from validators.data_schema import InputDataFrameSchema, PreprocessedDataSchema
+
 
 @mark.smoke
 @mark.linear_regression_schema
@@ -8,10 +10,14 @@ class LinearRegressionSchemaTests:
     @mark.data_schema
     def test_data_schema(self, get_dataframe):
         d = get_dataframe
-        assert False
+        d = InputDataFrameSchema(d)
+        assert ~d.empty
 
-    def test_pre_processing_schema(self):
-        assert False
+    def test_pre_processing_schema(self, get_dataframe):
+        df = get_dataframe
+        df = InputDataFrameSchema(df)
+        df = PreprocessedDataSchema(df)  # TODO : Add cleaned up preprocessing script from EDA.
+        assert ~df.empty
 
     def test_post_processing_schema(self):
         assert False

@@ -1,8 +1,11 @@
+import pandas as pd
+
 from src.basewrappermodel import BaseWrapperModel
 
 
 class LinearRegressionModel(BaseWrapperModel):
     """Skeleton for baseline scikit-learn Linear Model interface"""
+
     def fit(self):
         pass
 
@@ -19,7 +22,12 @@ class LinearRegressionModel(BaseWrapperModel):
         pass
 
     def preprocess(self):
-        pass
+        df = pd.read_csv("../data/data.csv")
 
     def setup(self):
         pass
+
+
+if __name__ == '__main__':
+    m = LinearRegressionModel()
+    m.preprocess()
