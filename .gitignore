@@ -17,3 +17,4 @@ tests/*/.hypothesis/*
 .hypothesis/*/
 tests/.pytest_cache/*
 *.egg*
+udemy*
