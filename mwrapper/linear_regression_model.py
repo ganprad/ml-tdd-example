@@ -143,9 +143,10 @@ class LinearRegressionModel(BaseWrapperModel):
         :param x: pd.DataFrame
         :return: pd.DataFrame
         """
+        enc = joblib.load(self.constants.minmax_encoder_filename)
         oh = joblib.load(self.constants.onehot_encoder_filename)
 
-        x[self.constants.minmax] = minmax.transform(x[self.constants.minmax])
+        x[self.constants.minmax] = enc.transform(x[self.constants.minmax])
         x_one_hot = oh.transform(x[self.constants.one_hot])
         x_one_hot = pd.DataFrame(x_one_hot.todense())
         x_one_hot = make_categorical_columns(x_one_hot, categories=oh.categories_, columns=self.constants.one_hot)
