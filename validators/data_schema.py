@@ -1,11 +1,12 @@
 import os
 from pathlib import Path
 import os
-from typing import Optional, Literal
+from typing import Optional
 from pathlib import Path
 import pandera
 from pandera import SchemaModel
 from pandera.typing import Series
+from pydantic.typing import Literal
 from pydantic import BaseModel, validator
 
 
@@ -78,6 +79,41 @@ ZIPCODES = """766xx,660xx,916xx,124xx,439xx,200xx,103xx,891xx,612xx,926xx,921xx,
 012xx,395xx,836xx,714xx,681xx,102xx,883xx,227xx,411xx,667xx,638xx,572xx,647xx,471xx,312xx,826xx,558xx,462xx,385xx,
 214xx,298xx,423xx,390xx,041xx,415xx,768xx,843xx,728xx,743xx,051xx,798xx,593xx,664xx,545xx,266xx,159xx,007xx,637xx"""
 
+PKG_PATH = Path(__file__).parents[2].resolve()
+DATA_FILE = PKG_PATH / "data/data.csv"
+ENCODER_DIR = PKG_PATH / "ml_wrapper/encoders"
+MODELS_DIR = PKG_PATH / "ml_wrapper/saved_models"
+MINMAX_ENCODER_FILENAME = ENCODER_DIR / "minmax.joblib"
+ONEHOT_ENCODER_FILENAME = ENCODER_DIR / "onehot.joblib"
+
+
+class Constants(BaseModel):
+    data_file: Literal[DATA_FILE] = DATA_FILE
+    encoder_dir: Literal[ENCODER_DIR] = ENCODER_DIR
+    minmax_encoder_filename: Literal[MINMAX_ENCODER_FILENAME] = MINMAX_ENCODER_FILENAME
+    onehot_encoder_filename: Literal[ONEHOT_ENCODER_FILENAME] = ONEHOT_ENCODER_FILENAME
+
+    drop: Literal["Id", "pymnt_plan", "zip_code", "initial_list_status", "mths_since_last_record"] = DROP
+
+    minmax: Literal[
+        "mths_since_last_delinq",
+        "emp_length",
+        "annual_inc",
+        "debt_to_income",
+        "inq_last_6mths",
+        "pub_rec",
+        "mths_since_last_major_derog",
+        "collections_12_mths_ex_med",
+        "delinq_2yrs",
+        "revol_bal",
+        "revol_util",
+        "total_acc",
+        "open_acc",
+    ] = MINMAX
+
+    one_hot: Literal["policy_code", "home_ownership", "verification_status", "purpose_cat", "addr_state"] = ONE_HOT
+
+    target: Literal["is_bad"] = TARGET
 
 class Constants(BaseModel):
     data_file: str = DATA_PATH  # Check for a data file names data.csv
