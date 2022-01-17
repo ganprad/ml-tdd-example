@@ -2,12 +2,18 @@ from typing import Dict
 
 import optuna
 import pandas as pd
-
+import joblib
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import RepeatedStratifiedKFold, StratifiedKFold
+from sklearn import metrics
 from mwrapper.basewrappermodel import BaseWrapperModel
 from mwrapper.utils import drop_columns, preprocess_emp_length, preprocess_categorical_columns, preprocess_purpose_cat, \
-    fillnans
-from mvalidators.data_schema import InputDataFrameSchema
-from mvalidators.linear_regression_model_schema import HyperParam, ModelParam, JobParam, OptunaCVParam
+    fillnans, oh_encode, minmax, make_categorical_columns
+from mvalidators.data_schema import InputDataFrameSchema, PreprocessedDataSchema
+from mvalidators.constants import Constants
+from mvalidators.linear_regression_model_schema import HyperParam, ModelParam, JobParam, OptunaCVParam, \
+    TrainedModelExists
+
 
 def get_hp_distributions(hyper_params: HyperParam) -> Dict:
     """
@@ -26,46 +32,6 @@ def get_hp_distributions(hyper_params: HyperParam) -> Dict:
         elif type(param.value) == int:
             hp_distributions[param.name] = optuna.distributions.IntLogUniformDistribution(low=param.min, high=param.max)
     return hp_distributions
-
-class LinearRegressionModel(BaseWrapperModel):
-    """Skeleton for baseline scikit-learn Linear Model interface"""
-
-    def fit(self):
-        pass
-
-    def predict(self):
-        pass
-
-    def evaluate(self):
-        pass
-
-    def tune(self):
-        pass
-
-    def predict_proba(self):
-        pass
-
-    def preprocess(self, x):
-        """
-        Preprocessing function.
-
-        :param x:pandas.DataFrame
-        :return:pandas.DataFrame
-        """
-
-        valid_input_df = InputDataFrameSchema.validate(x)
-        preprocessed_df = drop_columns(valid_input_df, self.constants.drop)
-        preprocessed_df = preprocess_emp_length(preprocessed_df)
-        preprocessed_df = preprocess_categorical_columns(preprocessed_df, self.constants.one_hot)
-        preprocessed_df = preprocess_purpose_cat(preprocessed_df)
-
-        for col in preprocessed_df.columns:
-            preprocessed_df = fillnans(preprocessed_df, col)
-        assert not pd.isnull(preprocessed_df).values.sum() > 0
-        return preprocessed_df
-
-    def setup(self):
-        pass
 
 
 class LinearRegressionModel(BaseWrapperModel):
@@ -135,8 +101,8 @@ class LinearRegressionModel(BaseWrapperModel):
         """
         Preprocessing function.
 
-        :param x:pandas.DataFrame
-        :return:pandas.DataFrame
+        :param x:pd.DataFrame
+        :return:pd.DataFrame
         """
 
         valid_input_df = InputDataFrameSchema.validate(x)
@@ -147,7 +113,7 @@ class LinearRegressionModel(BaseWrapperModel):
 
         for col in preprocessed_df.columns:
             preprocessed_df = fillnans(preprocessed_df, col)
-        assert not pandas.isnull(preprocessed_df).values.sum() > 0
+        assert not pd.isnull(preprocessed_df).values.sum() > 0
         return preprocessed_df
 
     def train_encode(self, x):
@@ -156,14 +122,14 @@ class LinearRegressionModel(BaseWrapperModel):
         This function trains a minmax encoder and an one hot encoder.
         It validates the encoded output with the preprocessed schema model.
 
-         :param x: pandas.DataFrame
-        :return:  pandas.DataFrame
+         :param x: pd.DataFrame
+        :return:  pd.DataFrame
         """
-        x, minmax = train_minmax(x, self.constants.minmax)
-        x, oh = train_oh_encode(x, self.constants.one_hot)
+        x, enc = minmax(x, self.constants.minmax)
+        x, oh = oh_encode(x, self.constants.one_hot)
         valid_df = PreprocessedDataSchema.validate(x)
-        assert not pandas.isnull(valid_df).values.sum() > 0
-        joblib.dump(minmax, self.constants.minmax_encoder_filename)
+        assert not pd.isnull(valid_df).values.sum() > 0
+        joblib.dump(enc, self.constants.minmax_encoder_filename)
         joblib.dump(oh, self.constants.onehot_encoder_filename)
         return valid_df
 
@@ -174,25 +140,25 @@ class LinearRegressionModel(BaseWrapperModel):
         mvalidators for model predictions.
         The output is validated using the preprocessed schema model.
 
-        :param x: pandas.DataFrame
-        :return: pandas.DataFrame
+        :param x: pd.DataFrame
+        :return: pd.DataFrame
         """
-        minmax = joblib.load(self.constants.minmax_encoder_filename)
+        enc = joblib.load(self.constants.minmax_encoder_filename)
         oh = joblib.load(self.constants.onehot_encoder_filename)
 
         x[self.constants.minmax] = minmax.transform(x[self.constants.minmax])
         x_one_hot = oh.transform(x[self.constants.one_hot])
-        x_one_hot = pandas.DataFrame(x_one_hot.todense())
+        x_one_hot = pd.DataFrame(x_one_hot.todense())
         x_one_hot = make_categorical_columns(x_one_hot, categories=oh.categories_, columns=self.constants.one_hot)
         x = x.drop(columns=self.constants.one_hot)
-        x = pandas.concat([x, x_one_hot], axis=1)
+        x = pd.concat([x, x_one_hot], axis=1)
         return PreprocessedDataSchema.validate(x)
 
     def fit(self, x, y):
         """
         Fit and save the logistic regression model given training dataset x and targets y.
 
-        :param x: pandas.Dataframe
+        :param x: pd.Dataframe
         :param y: numpy.ndarray
         :return: None
         """
@@ -207,7 +173,7 @@ class LinearRegressionModel(BaseWrapperModel):
         Predict target "is_bad" outcomes using the scikit-learn logistic regression model.
         This function predicts target variables using trained logistic regression model.
 
-        :param x: pandas.DataFrame
+        :param x: pd.DataFrame
         :return: numpy.ndarray
         """
 
@@ -222,7 +188,7 @@ class LinearRegressionModel(BaseWrapperModel):
         Predict probabilities of target "is_bad" outcomes using the scikit-learn logistic regression model.
         This function predicts target probabilities using a trained logistic regression model.
 
-        :param x: pandas.DataFrame
+        :param x: pd.DataFrame
         :return: numpy.ndarray
         """
         x = self.preprocess(x)
@@ -235,7 +201,7 @@ class LinearRegressionModel(BaseWrapperModel):
         """
         Evaluate f1-score and log-loss for given mvalidators x and targets y.
 
-        :param x: pandas.DataFrame
+        :param x: pd.DataFrame
         :param y: numpy.ndarray
         :return: Dict
         """
@@ -247,13 +213,13 @@ class LinearRegressionModel(BaseWrapperModel):
         auc = metrics.auc(fpr, tpr)
         return {"f1_score": f1_score, "logloss": logloss, "auc": auc}
 
-    def tune_parameters(self, x, y):
+    def tune(self, x, y):
         """
         Tune logistic regression model hyper-parameters using cross-validation for best f1-score.
         Since the model parameters have been optimized for performance on a specific dataset, this tuned model is
         expected to be used on mvalidators originating from the SAME mvalidators generating process or environment.
 
-        :param x: pandas.DataFrame
+        :param x: pd.DataFrame
         :param y: numpy.ndarray
         :return:Dict
         """
@@ -288,7 +254,12 @@ class LinearRegressionModel(BaseWrapperModel):
 
 if __name__ == '__main__':
     df = pd.read_csv("../data/data.csv")
-    m = LinearRegressionModel()
+    hyper_parameters = HyperParam()
+    model_parameters = ModelParam()
+    job_parameters = JobParam()
+    optuna_cv_parameters = OptunaCVParam()
+    m = LinearRegressionModel(hyper_parameters, model_parameters, job_parameters, optuna_cv_parameters)
     preprocessed_df = m.preprocess(df)
+
 
 

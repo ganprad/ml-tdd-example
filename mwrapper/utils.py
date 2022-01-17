@@ -87,7 +87,7 @@ def make_categorical_columns(df, categories, columns):
     return df
 
 
-def train_minmax(df, columns):
+def minmax(df, columns):
     """
     Function that does MinMax scaling all numerical columns specified by columns argument.
 
@@ -101,7 +101,7 @@ def train_minmax(df, columns):
     return df, minmax
 
 
-def train_oh_encode(df, columns):
+def oh_encode(df, columns):
     """
     Function that does OneHot encoding of categorical columns specified by columns argument.
     :param df: pandas.DataFrame
