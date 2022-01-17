@@ -44,7 +44,7 @@ class TrainedModelExists(BaseModel):
             return value
         else:
             raise ValueError(
-                f"Trained model does not exist. Expected file path: {MODEL_FILE}."
+                f"Trained model does not exist. Expected file path: {value}."
                 f"Fit a model on training validators if it doesn't exist."
             )
 
