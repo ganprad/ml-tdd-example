@@ -1,9 +1,4 @@
 data/*
-.keepsake/*/**
-.keepsake/*
-src/.keepsake/*/**
-src/.keepsake/*
-src/lightning_logs/*
 *.pyc
 round_*/*
 .idea/*/**
