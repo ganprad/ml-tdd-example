@@ -1,12 +1,12 @@
 from pytest import mark
 
-from src.linear_regression_model import LinearRegressionModel
+from mwrapper.linear_regression_model import LinearRegressionModel
 
 from pandera import SchemaModel
 from pydantic import BaseModel, BaseConfig
 
-from validators.data_schema import InputDataFrameSchema, PreprocessedDataSchema, Constants
-from validators.linear_regression_model_schema import (
+from mvalidators.data_schema import InputDataFrameSchema, PreprocessedDataSchema, Constants
+from mvalidators.linear_regression_model_schema import (
     JobParam,
     HyperParam,
     HyperC,

@@ -39,7 +39,7 @@ def dataset_specific_cleanup(df, columns):
 
 def fillnans(df, columns):
     """Fill NaNs in columns with -1.0.
-    Making the assumption that input validators is not missing at random.
+    Making the assumption that input mvalidators is not missing at random.
 
     :param df :pandas.DataFrame
     :param columns :str

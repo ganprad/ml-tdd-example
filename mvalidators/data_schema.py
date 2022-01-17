@@ -81,8 +81,8 @@ ZIPCODES = """766xx,660xx,916xx,124xx,439xx,200xx,103xx,891xx,612xx,926xx,921xx,
 
 PKG_PATH = Path(__file__).parents[2].resolve()
 DATA_FILE = PKG_PATH / "data/data.csv"
-ENCODER_DIR = PKG_PATH / "ml_wrapper/encoders"
-MODELS_DIR = PKG_PATH / "ml_wrapper/saved_models"
+ENCODER_DIR = PKG_PATH / "mwrapper/encoders"
+MODELS_DIR = PKG_PATH / "mwrapper/saved_models"
 MINMAX_ENCODER_FILENAME = ENCODER_DIR / "minmax.joblib"
 ONEHOT_ENCODER_FILENAME = ENCODER_DIR / "onehot.joblib"
 

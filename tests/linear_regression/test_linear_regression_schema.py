@@ -1,6 +1,6 @@
 from pytest import mark
 
-from validators.data_schema import InputDataFrameSchema, PreprocessedDataSchema
+from mvalidators.data_schema import InputDataFrameSchema, PreprocessedDataSchema
 
 
 @mark.smoke
