@@ -54,7 +54,6 @@ class LinearRegressionTests:
             os.remove(test_model.job_parameters.model_file)
         test_model.fit(x, y)
         assert os.path.exists(test_model.job_parameters.model_file)
-        os.remove(test_model.job_parameters.model_file)
 
 
     @mark.evaluate
@@ -63,7 +62,6 @@ class LinearRegressionTests:
         x, y = test_df.drop(target, axis=1), test_df[target].values
         results = test_model.evaluate(x, y)
         assert results["auc"] > 0.6
-        os.remove(test_model.job_parameters.model_file)
 
     @mark.predict
     def test_predict(self, test_df, test_model):
@@ -78,7 +76,7 @@ class LinearRegressionTests:
         x, y = test_df.drop(target, axis=1), test_df[target].values
         if os.path.exists(test_model.job_parameters.model_file):
             os.remove(test_model.job_parameters.model_file)
-        _ = test_model.tune_parameters(x, y)
+        _ = test_model.tune(x, y)
         assert os.path.exists(test_model.job_parameters.model_file)
 
     @mark.predict_proba
