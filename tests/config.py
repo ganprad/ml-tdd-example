@@ -7,7 +7,13 @@ class Config:
         FILENAMES = ["data", "retrain", "deployment"]
         assert file in FILENAMES
         PKG_PATH = Path(__file__).parents[1].resolve()
-        fn_constants_map_dict = {
-            f"{file}": f"../../data/{file}.csv"}
-        assert os.path.exists(fn_constants_map_dict[file])
-        self.DATA_PATH = fn_constants_map_dict[file]
+        TEST_MODELS_DIR = PKG_PATH / "tests/models"
+        DATA_PATH = PKG_PATH / f"data/{file}.csv"
+        fn_data_path_constants_map = {
+            f"{file}": DATA_PATH}
+        fn_model_path_constants_map = {
+            f"{file}":  str(TEST_MODELS_DIR / f"test_{file}_logistic_regression.joblib")}
+        assert os.path.exists(fn_data_path_constants_map[file])
+        self.DATA_PATH = fn_data_path_constants_map[file]
+        self.TEST_MODEL_FILE = fn_model_path_constants_map[file]
+

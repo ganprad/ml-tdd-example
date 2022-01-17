@@ -4,10 +4,10 @@ from pydantic import BaseModel
 
 
 
-PKG_PATH = Path(__file__).parents[2].resolve()
+PKG_PATH = Path(__file__).parents[1].resolve()
 DATA_FILE = PKG_PATH / "data/data.csv"
-ENCODER_DIR = PKG_PATH / "ml_wrapper/encoders"
-MODELS_DIR = PKG_PATH / "ml_wrapper/saved_models"
+ENCODER_DIR = PKG_PATH / "encoders"
+MODELS_DIR = PKG_PATH / "saved_models"
 MINMAX_ENCODER_FILENAME = ENCODER_DIR / "minmax.joblib"
 ONEHOT_ENCODER_FILENAME = ENCODER_DIR / "onehot.joblib"
 
