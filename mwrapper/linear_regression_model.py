@@ -127,11 +127,11 @@ class LinearRegressionModel(BaseWrapperModel):
         """
         x, enc = minmax(x, self.constants.minmax)
         x, oh = oh_encode(x, self.constants.one_hot)
-        valid_df = PreprocessedDataSchema.validate(x)
-        assert not pd.isnull(valid_df).values.sum() > 0
+        df = PreprocessedDataSchema.validate(x)
+        assert not pd.isnull(df).values.sum() > 0
         joblib.dump(enc, self.constants.minmax_encoder_filename)
         joblib.dump(oh, self.constants.onehot_encoder_filename)
-        return valid_df
+        return df
 
     def predict_encode(self, x):
         """
@@ -143,7 +143,6 @@ class LinearRegressionModel(BaseWrapperModel):
         :param x: pd.DataFrame
         :return: pd.DataFrame
         """
-        enc = joblib.load(self.constants.minmax_encoder_filename)
         oh = joblib.load(self.constants.onehot_encoder_filename)
 
         x[self.constants.minmax] = minmax.transform(x[self.constants.minmax])
@@ -260,6 +259,8 @@ if __name__ == '__main__':
     optuna_cv_parameters = OptunaCVParam()
     m = LinearRegressionModel(hyper_parameters, model_parameters, job_parameters, optuna_cv_parameters)
     preprocessed_df = m.preprocess(df)
+
+
 
 
 

@@ -4,17 +4,17 @@ from abc import ABC, abstractmethod
 class BaseWrapperModel(ABC):
     """Example interface between input requirements and ML model"""
     @abstractmethod
-    def fit(self):
+    def fit(self, *args, **kwargs):
         pass
 
     @abstractmethod
-    def tune(self):
+    def tune(self, *args, **kwargs):
         pass
 
     @abstractmethod
-    def evaluate(self):
+    def evaluate(self, *args, **kwargs):
         pass
 
     @abstractmethod
-    def predict(self):
+    def predict(self, *args, **kwargs):
         pass
