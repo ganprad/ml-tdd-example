@@ -10,8 +10,8 @@ PKG_PATH = Path(__file__).parents[2].resolve()
 MODELS_DIR = PKG_PATH / "python-automation/saved_models"
 MODEL_FILE = MODELS_DIR / "logistic_regression.joblib"
 
-# TEST_MODELS_DIR = PKG_PATH / "tests/models"
-# TEST_MODEL_FILE = TEST_MODELS_DIR / "test_logistic_regression.joblib"
+TEST_MODELS_DIR = PKG_PATH / "tests/models"
+TEST_MODEL_FILE = TEST_MODELS_DIR / "test_logistic_regression.joblib"
 
 
 N_JOBS = 1
@@ -31,10 +31,24 @@ L1_RATIO_MAX = 0.95
 
 
 class JobParam(BaseModel):
-    model_file: PosixPath = MODEL_FILE
+    is_test: bool
     n_jobs: Literal[conint(gt=0)] = N_JOBS
     random_state: Literal[42] = RANDOM_STATE
     verbose: Literal[conint(ge=0)] = VERBOSE
+
+    @validator("is_test")
+    def set_model_file(cls, value):
+        PKG_PATH = Path(__file__).parents[1].resolve()
+        if value:
+            TEST_MODELS_DIR = PKG_PATH / "tests/models"
+            TEST_MODEL_FILE = TEST_MODELS_DIR / "test_logistic_regression.joblib"
+            cls.model_file = TEST_MODEL_FILE
+            return value
+        else:
+            MODELS_DIR = PKG_PATH / "python-automation/saved_models"
+            MODEL_FILE = MODELS_DIR / "logistic_regression.joblib"
+            cls.model_file = MODEL_FILE
+            return value
 
 
 class TrainedModelExists(BaseModel):
