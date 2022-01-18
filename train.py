@@ -36,7 +36,7 @@ if __name__ == "__main__":
     plt.plot([0, 1], [0, 1], lw=2, linestyle="--")
     plt.text(x=0.8, y=0.1, s=f"ROC curve area = {auc:.2f}", ha="center", va="center")
     plt.legend(["model", "random guess"])
-    plt.savefig("../../results/sklearn_logistic_regression_roc.png")
+    # plt.savefig("../../results/sklearn_logistic_regression_roc.png")
     plt.show()
 
     sweep = ((thresholds <= 1.0).astype(float) * (thresholds > 0.0).astype(float)).astype(float)
