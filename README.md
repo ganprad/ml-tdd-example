@@ -1,4 +1,3 @@
-# Testing and validation of Machine learning model fore deployment.
+# Machine learning TDD example:
 
-### Learnings from these Udemy courses:
-
+### Learnings from Udemy courses.
