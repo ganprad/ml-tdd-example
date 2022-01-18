@@ -1,6 +1,5 @@
 # Machine learning TDD example.
 ======
-![img.png](img.png)
 
 This is a baseline framework for wrapping custom machine learning and deep learning models for the lending tabular
 dataset. The wrapper model has `fit`, `predict`, `predict_proba` and `evaluate`
@@ -105,15 +104,13 @@ __Tuning parameters__:
 Unit Tests
 ---
 ---
-Unit tests are located in `tests/test_model.py`.
-
 `Hypothesis` was used for writing parametrized schema tests in combination with `pydantic` and `pandera`.
 
 The model inputs are validated by schemas defined using `pydantic`. The dataset features have to be checked to ensure
 that the model makes predictions on data that originates from the same data generating process as the training data.
 The `pandera` library makes it possible to do schema validation in combination with statistical validation. It also
 allows for synthesising data for testing.
-
+![img.png](img.png)
 References:
 
 * https://arxiv.org/abs/2012.12028
