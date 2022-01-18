@@ -1,7 +1,9 @@
-from strictyaml import load, YAML
 from mvalidators.constants import Constants
 
-def test_open():
-    constants = Constants()
-    constants_yml = YAML(constants.__dict__)
-    assert constants_yml is not None
+
+def test_constants():
+    """
+    Test that Constants data class is not empty.
+    Assumed not empty because data class validates
+    """
+    Constants()
