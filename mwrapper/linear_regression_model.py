@@ -60,26 +60,29 @@ class LinearRegressionModel(BaseWrapperModel):
     """
 
     def __init__(self, hyper_parameters: HyperParam, model_parameters: ModelParam, job_parameters: JobParam,
-            optuna_cv_parameters: OptunaCVParam, ):
+                 optuna_cv_parameters: OptunaCVParam, ):
         self.hyper_parameters = hyper_parameters
         self.solver_parameters = model_parameters
         self.job_parameters = job_parameters
         self.optuna_cv_parameters = optuna_cv_parameters
         self.logistic_model_params = dict(max_iter=hyper_parameters.max_iter.value, C=hyper_parameters.C.value,
-            l1_ratio=hyper_parameters.l1_ratio.value, solver=model_parameters.solver,
-            fit_intercept=model_parameters.fit_intercept, warm_start=model_parameters.warm_start,
-            multi_class=model_parameters.multi_class, penalty=model_parameters.penalty,
-            class_weight=model_parameters.class_weight, random_state=job_parameters.random_state,
-            n_jobs=job_parameters.n_jobs, verbose=job_parameters.verbose, )
+                                          l1_ratio=hyper_parameters.l1_ratio.value, solver=model_parameters.solver,
+                                          fit_intercept=model_parameters.fit_intercept,
+                                          warm_start=model_parameters.warm_start,
+                                          multi_class=model_parameters.multi_class, penalty=model_parameters.penalty,
+                                          class_weight=model_parameters.class_weight,
+                                          random_state=job_parameters.random_state, n_jobs=job_parameters.n_jobs,
+                                          verbose=job_parameters.verbose, )
         self.hp_distributions = get_hp_distributions(hyper_parameters)
         self.constants = Constants()
 
         if self.optuna_cv_parameters.n_repeats >= 1:
             self.kf = RepeatedStratifiedKFold(n_splits=optuna_cv_parameters.n_splits,
-                n_repeats=optuna_cv_parameters.n_repeats, random_state=job_parameters.random_state, )
+                                              n_repeats=optuna_cv_parameters.n_repeats,
+                                              random_state=job_parameters.random_state, )
         else:
             self.kf = StratifiedKFold(n_splits=optuna_cv_parameters.n_splits, random_state=job_parameters.random_state,
-                shuffle=True)
+                                      shuffle=True)
         self.scorer = metrics.get_scorer(model_parameters.metric)
 
     def preprocess(self, x):
@@ -210,10 +213,13 @@ class LinearRegressionModel(BaseWrapperModel):
         """
         model = LogisticRegression(**self.logistic_model_params)
         hp_search = optuna.integration.OptunaSearchCV(estimator=model, cv=self.kf, scoring=self.scorer,
-            param_distributions=self.hp_distributions, refit=self.optuna_cv_parameters.refit,
-            return_train_score=self.optuna_cv_parameters.return_train_score,
-            n_trials=self.optuna_cv_parameters.n_trials, n_jobs=self.job_parameters.n_jobs,
-            random_state=self.job_parameters.random_state, verbose=self.job_parameters.verbose, )
+                                                      param_distributions=self.hp_distributions,
+                                                      refit=self.optuna_cv_parameters.refit,
+                                                      return_train_score=self.optuna_cv_parameters.return_train_score,
+                                                      n_trials=self.optuna_cv_parameters.n_trials,
+                                                      n_jobs=self.job_parameters.n_jobs,
+                                                      random_state=self.job_parameters.random_state,
+                                                      verbose=self.job_parameters.verbose, )
 
         x = self.preprocess(x)
         x = self.train_encode(x)
@@ -227,13 +233,3 @@ class LinearRegressionModel(BaseWrapperModel):
         joblib.dump(hp_search.best_estimator_, self.job_parameters.model_file)
         return ({**best_params, "scores": {"f1_score": f1_score, "logloss": logloss}},
                 {"fpr": fpr, "tpr": tpr, "thresholds": thresholds, "target": y, "probas": probas},)
-
-
-if __name__ == '__main__':
-    df = pd.read_csv("../data/data.csv")
-    hyper_parameters = HyperParam()
-    model_parameters = ModelParam()
-    job_parameters = JobParam()
-    optuna_cv_parameters = OptunaCVParam()
-    m = LinearRegressionModel(hyper_parameters, model_parameters, job_parameters, optuna_cv_parameters)
-    preprocessed_df = m.preprocess(df)
