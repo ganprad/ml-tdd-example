@@ -6,13 +6,12 @@ from pydantic import BaseModel, validator, conint
 from pydantic.typing import Literal
 
 # TODO: Use a config file to handle paths
-PKG_PATH = Path(__file__).parents[2].resolve()
-MODELS_DIR = PKG_PATH / "python-automation/saved_models"
-MODEL_FILE = MODELS_DIR / "logistic_regression.joblib"
-
-TEST_MODELS_DIR = PKG_PATH / "tests/models"
-TEST_MODEL_FILE = TEST_MODELS_DIR / "test_logistic_regression.joblib"
-
+# PKG_PATH = Path(__file__).parents[2].resolve()
+# MODELS_DIR = PKG_PATH / "saved_models"
+# MODEL_FILE = MODELS_DIR / "logistic_regression.joblib"
+#
+# TEST_MODELS_DIR = PKG_PATH / "tests/models"
+# TEST_MODEL_FILE = TEST_MODELS_DIR / "test_logistic_regression.joblib"
 
 N_JOBS = 1
 N_SPLITS = 3
@@ -32,23 +31,27 @@ L1_RATIO_MAX = 0.95
 
 class JobParam(BaseModel):
     is_test: bool
+    fn: str
     n_jobs: Literal[conint(gt=0)] = N_JOBS
     random_state: Literal[42] = RANDOM_STATE
     verbose: Literal[conint(ge=0)] = VERBOSE
 
     @validator("is_test")
-    def set_model_file(cls, value):
+    def set_models_dir(cls, value):
         PKG_PATH = Path(__file__).parents[1].resolve()
         if value:
             TEST_MODELS_DIR = PKG_PATH / "tests/models"
-            TEST_MODEL_FILE = TEST_MODELS_DIR / "test_logistic_regression.joblib"
-            cls.model_file = TEST_MODEL_FILE
+            cls.models_dir = TEST_MODELS_DIR
             return value
         else:
-            MODELS_DIR = PKG_PATH / "python-automation/saved_models"
-            MODEL_FILE = MODELS_DIR / "logistic_regression.joblib"
-            cls.model_file = MODEL_FILE
+            MODELS_DIR = PKG_PATH / "saved_models"
+            cls.models_dir = MODELS_DIR
             return value
+
+    @validator("fn")
+    def set_model_file(cls, value):
+        filename = f"{value}_logistic_regression.joblib"
+        cls.model_file = cls.models_dir / filename
 
 
 class TrainedModelExists(BaseModel):
@@ -59,10 +62,8 @@ class TrainedModelExists(BaseModel):
         if os.path.exists(value):
             return value
         else:
-            raise ValueError(
-                f"Trained model does not exist. Expected file path: {value}."
-                f"Fit a model on training validators if it doesn't exist."
-            )
+            raise ValueError(f"Trained model does not exist. Expected file path: {value}."
+                             f"Fit a model on training validators if it doesn't exist.")
 
 
 class ModelParam(BaseModel):
@@ -133,6 +134,7 @@ class HyperParam(BaseModel):
     C: HyperC = HyperC()
     max_iter: HyperMaxIter = HyperMaxIter()
     l1_ratio: HyperL1Ratio = HyperL1Ratio()
+
 
 class ModelInputs(BaseModel):
     C: HyperC = HyperC()

@@ -13,7 +13,7 @@ sns.set_theme(context="notebook", style="ticks", palette="colorblind")
 df = pandas.read_csv(Constants().data_file)
 hyper_parameters = HyperParam()
 model_parameters = ModelParam()
-job_parameters = JobParam()
+job_parameters = JobParam(is_test=False, fn="baseline")
 optuna_cv_parameters = OptunaCVParam()
 model = LinearRegressionModel(hyper_parameters, model_parameters, job_parameters, optuna_cv_parameters)
 
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     sweep_thresholds = thresholds[sweep * thresholds > 0]
     recall_scores = [metrics.recall_score(y_pred=(probas > th).astype(float), y_true=y) for th in sweep_thresholds]
     precision_scores = [metrics.precision_score(y_pred=(probas > th).astype(float), y_true=y) for th in
-        sweep_thresholds]
+                        sweep_thresholds]
 
     plt.figure()
     d = {th: s for th, s in zip(sweep_thresholds, precision_scores)}
@@ -66,14 +66,14 @@ if __name__ == "__main__":
 
     plt.axvline(x=balance_threshold, lw=0.5, color="darkred", linestyle="--")
     plt.text(x=balance_threshold, y=0.5, s=f"balance: {balance_threshold:.2f}", rotation=90, fontsize=10, ha="center",
-        va="center", )
+             va="center", )
 
     plt.xlabel("thresholds")
     plt.ylabel("scores")
     plt.legend(["precision", "recall"])
     plt.grid(True, axis="both")
     plt.title("Trade-off curves: Baseline Logistic Regression ")
-    plt.savefig("../../results/sklearn_logistic_regression_tradeoff_sweep.png")
+    # plt.savefig("../../results/sklearn_logistic_regression_tradeoff_sweep.png")
     plt.show()
 
     # TODO  # Adding post-processing plotting utils.

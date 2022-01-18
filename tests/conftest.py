@@ -29,9 +29,9 @@ def get_test_fpath(get_fn):
 
 
 @pytest.fixture(scope="function")
-def test_model():
+def test_model(get_test_fpath):
     hyper_parameters = HyperParam()
     model_parameters = ModelParam()
-    job_parameters = JobParam(is_test=True)
+    job_parameters = JobParam(is_test=True, fn=get_test_fpath)
     optuna_cv_parameters = OptunaCVParam()
     return LinearRegressionModel(hyper_parameters, model_parameters, job_parameters, optuna_cv_parameters)
