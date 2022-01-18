@@ -1,4 +1,4 @@
-# Udemy python automation course:
+# Testing and validation of Machine learning model fore deployment.
 
-Step 0:
-Add pytest.ini
+### Learnings from these Udemy courses:
+

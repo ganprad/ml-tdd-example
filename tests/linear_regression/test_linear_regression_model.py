@@ -5,8 +5,6 @@ import hypothesis
 import hypothesis.strategies as strategies
 from scipy.stats import stats
 
-from mwrapper.linear_regression_model import LinearRegressionModel
-
 from pandera import SchemaModel
 from pydantic import BaseModel, BaseConfig
 
@@ -111,6 +109,7 @@ def test_job_parameter_datamodel(data):
 )
 @mark.data_model
 def test_hyper_parameter_datamodel(data):
+    """Checks the validity of input model hyper-parameters given their acceptable ranges"""
     assert isinstance(data, HyperParam)
 
 @mark.data_model

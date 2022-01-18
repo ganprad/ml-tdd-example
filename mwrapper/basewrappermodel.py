@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 
 class BaseWrapperModel(ABC):
-    """Example interface between input requirements and ML model"""
+    """Interface between input requirements and ML model"""
     @abstractmethod
     def fit(self, *args, **kwargs):
         pass
