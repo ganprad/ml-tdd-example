@@ -1,23 +1,15 @@
 import os
 
-from pytest import mark
 import hypothesis
 import hypothesis.strategies as strategies
-from scipy.stats import stats
-
 from pandera import SchemaModel
 from pydantic import BaseModel, BaseConfig
+from pytest import mark
+from scipy.stats import stats
 
 from mvalidators.data_schema import InputDataFrameSchema, PreprocessedDataSchema, Constants
-from mvalidators.linear_regression_model_schema import (
-    JobParam,
-    HyperParam,
-    HyperC,
-    HyperL1Ratio,
-    HyperMaxIter,
-    ModelParam,
-    OptunaCVParam,
-)
+from mvalidators.linear_regression_model_schema import (JobParam, HyperParam, HyperC, HyperL1Ratio, HyperMaxIter,
+                                                        ModelParam, OptunaCVParam, )
 
 
 def test_if_datamodels_are_valid():
@@ -44,6 +36,7 @@ def test_if_datamodels_are_valid():
 @mark.smoke
 @mark.linear_regression
 class LinearRegressionTests:
+
     @mark.fit
     def test_fit(self, test_df, test_model):
         target = Constants().target
@@ -53,9 +46,12 @@ class LinearRegressionTests:
         test_model.fit(x, y)
         assert os.path.exists(test_model.job_parameters.model_file)
 
-
     @mark.evaluate
     def test_evaluate(self, test_df, test_model):
+        """
+        Evaluate the model with Area Under the precision and recall curve (AUC).
+        Check that the model performance is better that 60%.
+        """
         target = Constants().target
         x, y = test_df.drop(target, axis=1), test_df[target].values
         results = test_model.evaluate(x, y)
@@ -63,6 +59,11 @@ class LinearRegressionTests:
 
     @mark.predict
     def test_predict(self, test_df, test_model):
+        """ Statistical hypothesis test to ensure a model
+            outputs fall within reasonable ranges after retraining with additional data.
+            If the ttest between the model predictions and the ground truth results in a p_val<=5%
+            the null hypothesis is rejected. This implies the model has predictive power on this data.
+        """
         target = Constants().target
         x, y = test_df.drop(target, axis=1), test_df[target].values
         preds = test_model.predict(x)
@@ -70,6 +71,8 @@ class LinearRegressionTests:
 
     @mark.tune
     def test_tune(self, test_df, test_model):
+        """Tune model parameters and save tune model.
+        Check if the tuned model has been saved at the predefined path."""
         target = Constants().target
         x, y = test_df.drop(target, axis=1), test_df[target].values
         if os.path.exists(test_model.job_parameters.model_file):
@@ -79,12 +82,15 @@ class LinearRegressionTests:
 
     @mark.predict_proba
     def test_predict_proba(self, test_df, test_model):
+        """ Statistical hypothesis test to ensure a model
+            outputs fall within reasonable ranges after retraining with additional data.
+        """
         target = Constants().target
         x, y = test_df.drop(target, axis=1), test_df[target].values
         preds = test_model.predict_proba(x)
         preds = preds[:, 1]
         t_test = stats.ttest_ind_from_stats(mean1=y.mean(), mean2=preds.mean(), std1=y.std(), std2=preds.std(),
-            nobs1=y.shape[0], nobs2=preds.shape[0])
+                                            nobs1=y.shape[0], nobs2=preds.shape[0])
         p_val = t_test[1]
         assert p_val <= 0.05
 
@@ -94,33 +100,34 @@ class LinearRegressionTests:
 def test_job_parameter_datamodel(data):
     assert isinstance(data, JobParam)
 
+
 @mark.data_model
-@hypothesis.given(
-    strategies.builds(
-        HyperParam,
-        C=strategies.builds(HyperC, value=strategies.floats(min_value=HyperC().min, max_value=HyperC().max)),
-        max_iter=strategies.builds(
-            HyperMaxIter, value=strategies.integers(min_value=HyperMaxIter().min, max_value=HyperMaxIter().max)
-        ),
-        l1_ratio=strategies.builds(
-            HyperL1Ratio, value=strategies.floats(min_value=HyperL1Ratio().min, max_value=HyperL1Ratio().max)
-        ),
-    )
-)
+@hypothesis.given(strategies.builds(HyperParam, C=strategies.builds(HyperC,
+                                                                    value=strategies.floats(min_value=HyperC().min,
+                                                                                            max_value=HyperC().max)),
+                                    max_iter=strategies.builds(HyperMaxIter,
+                                                               value=strategies.integers(min_value=HyperMaxIter().min,
+                                                                                         max_value=HyperMaxIter().max)),
+                                    l1_ratio=strategies.builds(HyperL1Ratio,
+                                                               value=strategies.floats(min_value=HyperL1Ratio().min,
+                                                                                       max_value=HyperL1Ratio().max)), ))
 @mark.data_model
 def test_hyper_parameter_datamodel(data):
-    """Checks the validity of input model hyper-parameters given their acceptable ranges"""
+    """Checks the validity of input model hyper-parameters given their acceptable ranges.
+    Hypothesis: Is there any way to find a set of values that will invalidate HyperParam data class.
+    """
     assert isinstance(data, HyperParam)
+
 
 @mark.data_model
 @hypothesis.given(strategies.builds(ModelParam))
 def test_solver_parameters_datamodel(data):
+    """Hypothesis: Are there a set of values that will invalidate ModelParam data class."""
     assert isinstance(data, ModelParam)
 
 
 @mark.data_model
 @hypothesis.given(strategies.builds(OptunaCVParam))
 def test_optuna_cv_parameters_datamodel(data):
+    """Hypothesis: Are there a set of values that will invalidate OptunaCVParam data class"""
     assert isinstance(data, OptunaCVParam)
-
-
