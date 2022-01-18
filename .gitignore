@@ -1,4 +1,8 @@
 data/*
+encoders/*
+tests/models/*
+mvalidators/.hypothesis/*
+mwrapper/.hypothesis/*
 *.pyc
 round_*/*
 .idea/*/**

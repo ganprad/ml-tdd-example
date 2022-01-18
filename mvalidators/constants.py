@@ -1,8 +1,8 @@
+import os.path
 from pathlib import Path
+
+from pydantic import BaseModel, validator
 from pydantic.typing import Literal
-from pydantic import BaseModel
-
-
 
 PKG_PATH = Path(__file__).parents[1].resolve()
 DATA_FILE = PKG_PATH / "data/data.csv"
@@ -13,21 +13,9 @@ ONEHOT_ENCODER_FILENAME = ENCODER_DIR / "onehot.joblib"
 
 DROP = ["Id", "pymnt_plan", "zip_code", "initial_list_status", "mths_since_last_record"]
 
-MINMAX = [
-    "mths_since_last_delinq",
-    "emp_length",
-    "annual_inc",
-    "debt_to_income",
-    "inq_last_6mths",
-    "pub_rec",
-    "mths_since_last_major_derog",
-    "collections_12_mths_ex_med",
-    "delinq_2yrs",
-    "revol_bal",
-    "revol_util",
-    "total_acc",
-    "open_acc",
-]
+MINMAX = ["mths_since_last_delinq", "emp_length", "annual_inc", "debt_to_income", "inq_last_6mths", "pub_rec",
+          "mths_since_last_major_derog", "collections_12_mths_ex_med", "delinq_2yrs", "revol_bal", "revol_util",
+          "total_acc", "open_acc", ]
 
 ONE_HOT = ["policy_code", "home_ownership", "verification_status", "purpose_cat", "addr_state"]
 
@@ -76,27 +64,29 @@ ZIPCODES = """766xx,660xx,916xx,124xx,439xx,200xx,103xx,891xx,612xx,926xx,921xx,
 class Constants(BaseModel):
     data_file: Literal[DATA_FILE] = DATA_FILE
     encoder_dir: Literal[ENCODER_DIR] = ENCODER_DIR
+    models_dir: Literal[MODELS_DIR] = MODELS_DIR
     minmax_encoder_filename: Literal[MINMAX_ENCODER_FILENAME] = MINMAX_ENCODER_FILENAME
     onehot_encoder_filename: Literal[ONEHOT_ENCODER_FILENAME] = ONEHOT_ENCODER_FILENAME
 
     drop: Literal["Id", "pymnt_plan", "zip_code", "initial_list_status", "mths_since_last_record"] = DROP
 
     minmax: Literal[
-        "mths_since_last_delinq",
-        "emp_length",
-        "annual_inc",
-        "debt_to_income",
-        "inq_last_6mths",
-        "pub_rec",
-        "mths_since_last_major_derog",
-        "collections_12_mths_ex_med",
-        "delinq_2yrs",
-        "revol_bal",
-        "revol_util",
-        "total_acc",
-        "open_acc",
-    ] = MINMAX
+        "mths_since_last_delinq", "emp_length", "annual_inc", "debt_to_income", "inq_last_6mths", "pub_rec",
+        "mths_since_last_major_derog", "collections_12_mths_ex_med", "delinq_2yrs", "revol_bal", "revol_util",
+        "total_acc", "open_acc",] = MINMAX
 
     one_hot: Literal["policy_code", "home_ownership", "verification_status", "purpose_cat", "addr_state"] = ONE_HOT
 
     target: Literal["is_bad"] = TARGET
+
+    @validator("data_file")
+    def check_if_data_file_exists(cls, value):
+        assert os.path.exists(value)
+
+    @validator("encoder_dir")
+    def check_if_encoder_dir_exists(cls, value):
+        assert os.path.exists(value)
+
+    @validator("models_dir")
+    def check_if_models_dir_exists(cls, value):
+        assert os.path.exists(value)

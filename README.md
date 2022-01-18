@@ -1,4 +1,3 @@
-# Udemy python automation course:
+# Machine learning TDD example:
 
-Step 0:
-Add pytest.ini
+### Learnings from Udemy courses.

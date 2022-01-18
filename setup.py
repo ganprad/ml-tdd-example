@@ -8,5 +8,5 @@ setup(
     license="MIT",
     description="A python automation project skeleton",
     author="Pradeep Ganesan",
-    packages=find_packages(where='mwrapper')
+    packages=find_packages()
 )
