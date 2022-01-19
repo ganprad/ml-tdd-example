@@ -1,0 +1,42 @@
+name: ml-tdd-example workflow
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Add conda to system path
+        run: |
+          # $CONDA is an environment variable pointing to the root of the miniconda directory
+          echo $CONDA/bin >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          conda env update --file env_configs/environment_cpu.yml --name base
+      - name: Update dependencies
+        run: |
+          pip install -r requirements/requirements.txt
+          pip install -r requirements/requirements-dev.txt
+
+      - name: Tests
+        run: |
+          python -m pytest ml-tdd-workflow tests -v --junitxml=junit/test-results.xml
+          # converage report
+
+      - name: Upload Test results
+        uses: actions/upload-artifact
+        with:
+          name: pytest-results
+          path: junit/test-results.xml
+        if: always()
