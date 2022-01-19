@@ -5,7 +5,7 @@ from pydantic import BaseModel, validator
 from pydantic.typing import Literal
 
 PKG_PATH = Path(__file__).parents[1].resolve()
-DATA_FILE = PKG_PATH / "data/data.csv"
+DATA_FILE = PKG_PATH / "data/baseline_data.csv"
 ENCODER_DIR = PKG_PATH / "encoders"
 MODELS_DIR = PKG_PATH / "saved_models"
 MINMAX_ENCODER_FILENAME = ENCODER_DIR / "minmax.joblib"
@@ -79,14 +79,14 @@ class Constants(BaseModel):
 
     target: Literal["is_bad"] = TARGET
 
-    @validator("data_file")
+    @validator("data_file")  # pragma: no-cover
     def check_if_data_file_exists(cls, value):
         assert os.path.exists(value)
 
-    @validator("encoder_dir")
+    @validator("encoder_dir")  # pragma: no-cover
     def check_if_encoder_dir_exists(cls, value):
         assert os.path.exists(value)
 
-    @validator("models_dir")
+    @validator("models_dir")  # pragma: no-cover
     def check_if_models_dir_exists(cls, value):
         assert os.path.exists(value)

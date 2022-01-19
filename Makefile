@@ -4,11 +4,11 @@ help:
 
 # Install exact Python and CUDA versions
 conda-gpu:
-	conda env update --prune -f environment.yml
+	conda env update --prune -f env_configs/environment.yml
 
 # Install without CUDA
 conda-cpu:
-	conda env update --prune -f environment_cpu.yml
+	conda env update --prune -f env_configs/environment_cpu.yml
 
 # Compile and install exact pip packages
 pip-tools:
