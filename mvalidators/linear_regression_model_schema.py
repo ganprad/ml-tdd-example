@@ -19,31 +19,42 @@ ITER_MIN = 10
 ITER_MAX = 100
 L1_RATIO_MIN = 0.05
 L1_RATIO_MAX = 0.95
+DATA_FILENAME = "baseline"
 
 
 class JobParam(BaseModel):
     is_test: bool
-    fn: str
+    fn: Literal[DATA_FILENAME] = DATA_FILENAME
     n_jobs: Literal[conint(gt=0)] = N_JOBS
     random_state: Literal[42] = RANDOM_STATE
     verbose: Literal[conint(ge=0)] = VERBOSE
 
     @validator("is_test")
-    def set_models_dir(cls, value):
+    def set_dirs(cls, value):
         PKG_PATH = Path(__file__).parents[1].resolve()
+        cls.data_dir = PKG_PATH / "data"
         if value:
             TEST_MODELS_DIR = PKG_PATH / "tests/models"
             cls.models_dir = TEST_MODELS_DIR
+            assert os.path.exists(cls.models_dir)
             return value
         else:
             MODELS_DIR = PKG_PATH / "saved_models"
             cls.models_dir = MODELS_DIR
+            assert os.path.exists(cls.models_dir)
             return value
 
     @validator("fn")
     def set_model_file(cls, value):
         filename = f"{value}_logistic_regression.joblib"
         cls.model_file = cls.models_dir / filename
+        return value
+
+    @validator("fn")
+    def get_data_path(cls, value):
+        cls.data_path = str(cls.data_dir / f"{value}_data.csv")
+        assert os.path.exists(cls.data_path)
+        return value
 
 
 class TrainedModelExists(BaseModel):
