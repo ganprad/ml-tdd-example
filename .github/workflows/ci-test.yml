@@ -25,8 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          make conda-cpu
-          make activate
+          conda env update --prune -f env_configs/environment.yml --name base
           make pip-tools
           python setup.py install
 
