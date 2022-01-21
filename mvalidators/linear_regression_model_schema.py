@@ -37,12 +37,12 @@ class JobParam(BaseModel):
         if value:
             TEST_MODELS_DIR = PKG_PATH / "tests/models"
             cls.models_dir = TEST_MODELS_DIR
-            assert os.path.exists(cls.models_dir)
+            # assert os.path.exists(cls.models_dir)
             return value
         else:
             MODELS_DIR = PKG_PATH / "saved_models"
             cls.models_dir = MODELS_DIR
-            assert os.path.exists(cls.models_dir)
+            # assert os.path.exists(cls.models_dir)
             return value
 
     @validator("fn")
@@ -54,7 +54,7 @@ class JobParam(BaseModel):
     @validator("fn")
     def get_data_path(cls, value):
         cls.data_path = str(cls.data_dir / f"{value}_data.csv")
-        assert os.path.exists(cls.data_path)
+        # assert os.path.exists(cls.data_path)
         return value
 
 
