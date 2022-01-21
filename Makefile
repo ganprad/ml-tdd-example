@@ -7,7 +7,7 @@ conda-gpu:
 	conda env update --prune -f env_configs/environment.yml
 
 activate:
-    conda init bash | cd $HOME | . ./.bashrc | cd - | conda activate sub
+    conda init bash
 
 # Install without CUDA
 conda-cpu:
