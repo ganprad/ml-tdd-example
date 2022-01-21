@@ -3,7 +3,7 @@ on:
   push:
     branches: [ "main", "wip", "dev" ]
   pull_request:
-    branches: [ "main", "wip", "dev" ]
+    branches: [ "main" ]
 
 jobs:
   build-linux:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Tests
         run: |
-          pytest -v --junitxml=junit/test-results.xml --path $PWD/tests
+          pytest -v --junitxml=junit/test-results.xml
           # converage report
 
       - name: Upload Test results
