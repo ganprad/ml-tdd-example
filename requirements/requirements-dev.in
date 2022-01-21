@@ -1,5 +1,7 @@
 -c requirements.txt
 bandit
+black
+isort
 editdistance
 itermplot
 jupyterlab
@@ -14,4 +16,4 @@ hypothesis
 pyyaml
 tornado
 safety
-scipy
+cryptography
