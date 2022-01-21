@@ -23,7 +23,7 @@ DATA_FILENAME = "baseline"
 
 
 class JobParam(BaseModel):
-    is_test: bool
+    is_test: bool = True
     fn: Literal[DATA_FILENAME] = DATA_FILENAME
     n_jobs: Literal[conint(gt=0)] = N_JOBS
     random_state: Literal[42] = RANDOM_STATE
