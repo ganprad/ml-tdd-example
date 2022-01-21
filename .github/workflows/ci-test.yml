@@ -28,9 +28,3 @@ jobs:
         run: |
           pip install -r requirements/requirements.txt
           pip install -r requirements/requirements-dev.txt
-
-      - name: Tests
-        run: |
-          python -m pytest ml-tdd-workflow tests -v --junitxml=junit/test-results.xml
-          # converage report
-          
