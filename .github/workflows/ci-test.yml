@@ -32,7 +32,7 @@ jobs:
 
       - name: Tests
         run: |
-          pytest -v --junitxml=junit/test-results.xml
+          python -m pytest --cov mwrapper -v --junitxml=junit/test-results.xml
           # converage report
 
       - name: Upload Test results
