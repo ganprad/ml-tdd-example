@@ -1,4 +1,4 @@
-name: base
+name: sub
 channels:
   - defaults
 dependencies:

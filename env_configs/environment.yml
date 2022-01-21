@@ -1,4 +1,4 @@
-name: sartorius
+name: sub
 channels:
   - defaults
 dependencies:
