@@ -13,3 +13,4 @@ pyyaml
 tornado
 safety
 cryptography
+codecov
