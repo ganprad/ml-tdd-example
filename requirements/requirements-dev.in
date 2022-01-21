@@ -15,8 +15,3 @@ pyyaml
 tornado
 safety
 scipy
-pillow
-pytorch_tabnet
-pytorch_ranger
-torch_optimizer
-pyarrow

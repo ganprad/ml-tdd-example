@@ -26,7 +26,8 @@ jobs:
       - name: Install dependencies
         run: |
           conda env update --prune -f env_configs/environment_cpu.yml --name base
-          pip-compile requirements/requirements.in
+          pip-compile requirements/requirements.in && pip-compile requirements/requirements-dev.in
+          pip-sync requirements/requirements.txt requirements/requirements-dev.txt
           python setup.py install
 
       - name: Tests
