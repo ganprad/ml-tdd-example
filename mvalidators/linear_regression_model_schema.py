@@ -23,7 +23,7 @@ DATA_FILENAME = "baseline"
 
 
 class JobParam(BaseModel):
-    is_test: bool = True
+    is_test: bool
     fn: Literal[DATA_FILENAME] = DATA_FILENAME
     n_jobs: Literal[conint(gt=0)] = N_JOBS
     random_state: Literal[42] = RANDOM_STATE
@@ -33,7 +33,7 @@ class JobParam(BaseModel):
     def set_dirs(cls, value):
         PKG_PATH = Path(__file__).parents[1].resolve()
         cls.data_dir = PKG_PATH / "data"
-        if value:
+        if value == True:
             TEST_MODELS_DIR = PKG_PATH / "tests/models"
             cls.models_dir = TEST_MODELS_DIR
             assert os.path.exists(cls.models_dir)
