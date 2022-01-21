@@ -37,7 +37,7 @@ jobs:
           # converage report
 
       - name: Upload Test results
-        uses: actions/upload-artifact
+        uses: actions/upload-artifact@wip
         with:
           name: pytest-results
           path: junit/test-results.xml
