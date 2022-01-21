@@ -33,10 +33,4 @@ jobs:
         run: |
           python -m pytest ml-tdd-workflow tests -v --junitxml=junit/test-results.xml
           # converage report
-
-      - name: Upload Test results
-        uses: actions/upload-artifact
-        with:
-          name: pytest-results
-          path: junit/test-results.xml
-        if: always()
+          
