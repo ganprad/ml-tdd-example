@@ -24,9 +24,6 @@ jobs:
       - name: Install dependencies
         run: |
           make conda-cpu
-          conda init zsh
-          . ./.zshrc
-          conda activate base
           make pip-tools
           python setup.py install
 
