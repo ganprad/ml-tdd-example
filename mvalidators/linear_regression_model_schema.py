@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from pathlib import PosixPath
 
-from pydantic import BaseModel, validator, conint
+from pydantic import BaseModel, validator, conint, StrictBool
 from pydantic.typing import Literal
 
 N_JOBS = 1
@@ -23,7 +23,7 @@ DATA_FILENAME = "baseline"
 
 
 class JobParam(BaseModel):
-    is_test: bool
+    is_test: StrictBool
     fn: Literal[DATA_FILENAME] = DATA_FILENAME
     n_jobs: Literal[conint(gt=0)] = N_JOBS
     random_state: Literal[42] = RANDOM_STATE
@@ -33,15 +33,16 @@ class JobParam(BaseModel):
     def set_dirs(cls, value):
         PKG_PATH = Path(__file__).parents[1].resolve()
         cls.data_dir = PKG_PATH / "data"
+        print(value)
         if value:
             TEST_MODELS_DIR = PKG_PATH / "tests/models"
             cls.models_dir = TEST_MODELS_DIR
-            assert os.path.exists(cls.models_dir)
+            # assert os.path.exists(cls.models_dir)
             return value
         else:
             MODELS_DIR = PKG_PATH / "saved_models"
             cls.models_dir = MODELS_DIR
-            assert os.path.exists(cls.models_dir)
+            # assert os.path.exists(cls.models_dir)
             return value
 
     @validator("fn")
@@ -53,7 +54,7 @@ class JobParam(BaseModel):
     @validator("fn")
     def get_data_path(cls, value):
         cls.data_path = str(cls.data_dir / f"{value}_data.csv")
-        assert os.path.exists(cls.data_path)
+        # assert os.path.exists(cls.data_path)
         return value
 
 

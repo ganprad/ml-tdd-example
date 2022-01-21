@@ -1,10 +1,8 @@
 -c requirements.txt
 bandit
+black
+isort
 editdistance
-itermplot
-jupyterlab
-matplotlib
-seaborn
 pycodestyle
 pydocstyle
 pytest
@@ -14,9 +12,4 @@ hypothesis
 pyyaml
 tornado
 safety
-scipy
-pillow
-pytorch_tabnet
-pytorch_ranger
-torch_optimizer
-pyarrow
+cryptography

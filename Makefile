@@ -12,7 +12,6 @@ conda-cpu:
 
 # Compile and install exact pip packages
 pip-tools:
-	pip install pip-tools
 	pip-compile requirements/requirements.in && pip-compile requirements/requirements-dev.in
 	pip-sync requirements/requirements.txt requirements/requirements-dev.txt
 
