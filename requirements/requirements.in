@@ -22,10 +22,7 @@ black
 isort
 torchmeta
 ray
-ray_lightning
-google-api-python-client
 cryptography
 wandb
 strictyaml
-git+https://www.github.com/mouseland/cellpose.git
 git+https://github.com/PytorchLightning/lightning-bolts.git@master
