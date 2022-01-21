@@ -33,6 +33,7 @@ class JobParam(BaseModel):
     def set_dirs(cls, value):
         PKG_PATH = Path(__file__).parents[1].resolve()
         cls.data_dir = PKG_PATH / "data"
+        print(value)
         if value == True:
             TEST_MODELS_DIR = PKG_PATH / "tests/models"
             cls.models_dir = TEST_MODELS_DIR

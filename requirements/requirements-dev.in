@@ -3,10 +3,6 @@ bandit
 black
 isort
 editdistance
-itermplot
-jupyterlab
-matplotlib
-seaborn
 pycodestyle
 pydocstyle
 pytest
