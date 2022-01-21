@@ -16,7 +16,7 @@ from mwrapper.linear_regression_model import LinearRegressionModel
 
 @pytest.fixture(scope="function")
 def test_df():
-    jobparam = JobParam(is_test='true', fn="baseline")
+    jobparam = JobParam(is_test=True, fn="baseline")
     # cfg = Config(get_fn)
 
     data = pandas.read_csv(jobparam.data_path)
