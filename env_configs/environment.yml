@@ -2,7 +2,7 @@ name: sartorius
 channels:
   - defaults
 dependencies:
-  - python=3.7
+  - python=3.8
   - cudatoolkit=10.1
   - cudnn
   - pip
